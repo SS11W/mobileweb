@@ -170,13 +170,13 @@
     
     <!-- เพิ่มสคริปต์วาดโลโก้ด้วย Canvas -->
 <script>
-(function drawLogo(){
+(function animatedLogo(){
   const canvas = document.getElementById('logo-canvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const dpr = window.devicePixelRatio || 1;
   const cssSize = 56; // CSS display size in px
-  const baseSize = 64; // canvas internal size (will be scaled)
+  const baseSize = 64; // canvas internal base size
   canvas.style.width = cssSize + 'px';
   canvas.style.height = cssSize + 'px';
   canvas.width = baseSize * dpr;
@@ -187,39 +187,86 @@
   const h = baseSize;
   const cx = w/2;
   const cy = h/2;
-  const r = Math.min(w,h) * 0.44;
+  const rBase = Math.min(w,h) * 0.44;
 
-  // colors
   const brick = '#b7410e';
   const white = '#ffffff';
 
-  // background circle (brick)
-  ctx.clearRect(0,0,w,h);
-  ctx.beginPath();
-  ctx.arc(cx, cy, r, 0, Math.PI * 2);
-  ctx.fillStyle = brick;
-  ctx.fill();
+  let last = 0;
 
-  // thin outer ring
-  ctx.beginPath();
-  ctx.arc(cx, cy, r-2, 0, Math.PI * 2);
-  ctx.lineWidth = 2;
-  ctx.strokeStyle = 'rgba(255,255,255,0.06)';
-  ctx.stroke();
+  function drawFrame(ts){
+    const t = ts / 1000; // seconds
+    // animation params
+    const pulse = 1 + 0.06 * Math.sin(t * Math.PI * 1.2);     // gentle pulse
+    const rot = 0.04 * Math.sin(t * Math.PI * 0.9);           // slow rotation
+    const shine = (Math.sin(t * 2.2) + 1) / 2;                // 0..1 for highlight
 
-  // draw white initials "KKU" (centered)
-  ctx.fillStyle = white;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.font = 'bold ' + Math.round(w * 0.33) + 'px sans-serif';
-  ctx.fillText('KKU', cx, cy - Math.round(h*0.03));
+    // clear (use CSS coords)
+    ctx.clearRect(0, 0, w, h);
 
-  // small decorative accent (leaf-like) bottom-right
-  ctx.beginPath();
-  ctx.moveTo(cx + r*0.28, cy + r*0.02);
-  ctx.quadraticCurveTo(cx + r*0.55, cy + r*0.2, cx + r*0.06, cy + r*0.48);
-  ctx.fillStyle = 'rgba(255,255,255,0.12)';
-  ctx.fill();
+    ctx.save();
+    // transform: center, rotate, scale for pulse
+    ctx.translate(cx, cy);
+    ctx.rotate(rot);
+    ctx.scale(pulse, pulse);
+
+    // background circle (brick)
+    ctx.beginPath();
+    ctx.arc(0, 0, rBase, 0, Math.PI * 2);
+    ctx.fillStyle = brick;
+    ctx.fill();
+
+    // subtle inner gradient ring
+    const grad = ctx.createRadialGradient(0,0,rBase*0.2, 0,0,rBase);
+    grad.addColorStop(0, 'rgba(255,255,255,0.06)');
+    grad.addColorStop(0.85, 'rgba(0,0,0,0.06)');
+    ctx.beginPath();
+    ctx.arc(0, 0, rBase-1, 0, Math.PI*2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // white initials "KKU"
+    ctx.fillStyle = white;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = 'bold ' + Math.round(w * 0.33) + 'px sans-serif';
+    ctx.fillText('KKU', 0, -Math.round(h*0.03));
+
+    // decorative moving shine (rotating ellipse)
+    ctx.save();
+    ctx.rotate(rot * 2 + Math.PI * 0.25);
+    ctx.beginPath();
+    const sx = rBase * 0.65;
+    const sy = rBase * 0.25 * (0.6 + 0.4 * shine);
+    ctx.ellipse(sx, -rBase*0.18, sx*0.22, sy, Math.PI/6, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(255,255,255,' + (0.06 + 0.14 * shine) + ')';
+    ctx.fill();
+    ctx.restore();
+
+    ctx.restore();
+
+    // soft outer glow that pulses slightly (drawn in CSS coords)
+    ctx.beginPath();
+    ctx.arc(cx, cy, rBase + 3 + 2 * Math.sin(t*1.1), 0, Math.PI*2);
+    ctx.strokeStyle = 'rgba(183,65,14,' + (0.06 + 0.02 * Math.sin(t*2)) + ')';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    last = ts;
+    window.requestAnimationFrame(drawFrame);
+  }
+
+  window.requestAnimationFrame(drawFrame);
+
+  // handle resizing / DPR changes
+  const ro = new ResizeObserver(()=> {
+    const newDpr = window.devicePixelRatio || 1;
+    if (newDpr !== dpr) {
+      // reinitialize on DPR change (simple reload to update scale)
+      location.reload();
+    }
+  });
+  ro.observe(canvas);
 })();
 </script>
 </body>
