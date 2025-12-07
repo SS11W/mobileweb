@@ -1,0 +1,288 @@
+header {
+    background-color: #b7410e; /* สีส้มอิฐ */
+    color: #ffffff;
+    padding: 14px 0;
+}
+
+.header-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: center; /* logo + title centered as a group */
+    padding: 0 20px;
+}
+
+.logo {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    background: rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 600;
+}
+
+@media (max-width: 480px) {
+    .logo { width: 36px; height: 36px; padding: 4px; }
+    header h1 { font-size: 1.25rem; }
+    .header-inner { gap: 8px; }
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    justify-content: center;
+    max-width: 1600px; /* ขยายความกว้างของคอนเทนเนอร์เพิ่ม */
+    margin: 48px auto;
+    padding: 0 28px;
+}
+
+/* ขยายขนาดของแต่ละ item ให้ใหญ่ขึ้นอีกครั้ง */
+.item {
+    background-color: #ffefd9; /* โทนอุ่นเข้ากับ header */
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 12px;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    flex: 1 1 560px; /* ค่าเบสขนาดใหญ่ขึ้น */
+    min-width: 380px; /* ขนาดขั้นต่ำเพิ่มขึ้น */
+    max-width: 720px; /* จำกัดความกว้างสูงสุดให้ใหญ่ขึ้น */
+    box-shadow: 0 6px 24px rgba(0,0,0,0.10);
+    font-size: 1.08rem;
+    color: #5b2b0f;
+    transition: transform .18s ease, box-shadow .18s ease;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+/* footer ให้สีเดียวกับ header และจัดวางสวยงาม */
+footer {
+    background-color: #b7410e; /* same as header */
+    color: #ffffff;
+    padding: 16px 0;
+    text-align: center;
+    margin-top: 30px;
+}
+
+footer p {
+    margin: 4px 0;
+    font-size: 0.95rem;
+}
+
+/* ปรับความตอบสนองบนหน้าจอเล็ก */
+@media (max-width: 480px) {
+    header h1 { font-size: 1.25rem; }
+    .item { padding: 18px; font-size: 1rem; }
+}
+
+/* เพิ่มความสูงรูปเพื่อให้กล่องดูใหญ่ขึ้น */
+.slide img {
+    display: block;
+    width: 100%;
+    height: 420px; /* สูงขึ้นเพื่อให้กล่องดูใหญ่ */
+    object-fit: cover;
+}
+
+/* ปรับการตอบสนองบนจอขนาดต่างๆ */
+@media (max-width: 1400px) {
+    .item { flex: 1 1 48%; max-width: 640px; min-width: 360px; }
+    .slide img { height: 380px; }
+}
+@media (max-width: 1024px) {
+    .item { flex: 1 1 48%; max-width: 560px; min-width: 320px; }
+    .slide img { height: 320px; }
+}
+@media (max-width: 900px) {
+    .item { flex: 1 1 48%; min-width: 280px; max-width: none; }
+    .slide img { height: 280px; }
+}
+@media (max-width: 600px) {
+    .item { flex: 1 1 100%; min-width: 100%; }
+    .slide img { height: 180px; }
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #fff8f4; /* พื้นหลังอบอุ่น */
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* carousel (CSS-only, manual controls) */
+.carousel {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px 8px 0 0;
+    background: #fff;
+    aspect-ratio: 16/9;       /* กำหนดสัดส่วนของพื้นที่แสดงภาพ */
+    max-height: 560px;       /* จำกัดความสูงสูงสุดบนจอใหญ่ */
+}
+.carousel input { display: none; }
+
+.slides {
+    display: flex;
+    height: 100%;            /* ให้ slides เต็มความสูงของ carousel */
+    transition: transform .45s ease;
+    will-change: transform;
+}
+
+/* each slide fills the carousel area */
+.slide {
+    flex: 0 0 100%;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    text-align: left;
+}
+
+/* ภาพจะครอบคลุมพื้นที่ (no letterbox) และถูกจัดตำแหน่งเต็มพื้นที่ */
+.slide img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;       /* ครอบคลุมและตัดส่วนเกินอย่างสวยงาม */
+    object-position: center;
+    display: block;
+}
+
+/* translate rules per carousel name (c1-c4) */
+/* item 1 (3 slides) */
+#c1-1:checked ~ .slides { transform: translateX(0%); }
+#c1-2:checked ~ .slides { transform: translateX(-100%); }
+#c1-3:checked ~ .slides { transform: translateX(-200%); }
+
+/* item 2 (2 slides) */
+#c2-1:checked ~ .slides { transform: translateX(0%); }
+#c2-2:checked ~ .slides { transform: translateX(-100%); }
+
+/* item 3 (2 slides) */
+#c3-1:checked ~ .slides { transform: translateX(0%); }
+#c3-2:checked ~ .slides { transform: translateX(-100%); }
+
+/* item 4 (2 slides) */
+#c4-1:checked ~ .slides { transform: translateX(0%); }
+#c4-2:checked ~ .slides { transform: translateX(-100%); }
+
+/* controls (arrows) */
+.controls {
+    position: absolute;
+    inset: 0;
+    pointer-events: none; /* only labels are clickable */
+}
+.controls label {
+    pointer-events: auto;
+    display: none; /* shown selectively depending on checked state */
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.36);
+    color: #fff;
+    width: 34px;
+    height: 34px;
+    line-height: 34px;
+    text-align: center;
+    border-radius: 50%;
+    cursor: pointer;
+    user-select: none;
+    font-size: 20px;
+}
+
+/* left/right position */
+.controls .prev { left: 10px; }
+.controls .next { right: 10px; }
+
+/* show specific controls based on which radio is checked (example for c1) */
+#c1-1:checked ~ .controls .p1,
+#c1-1:checked ~ .controls .n1,
+#c1-2:checked ~ .controls .p2,
+#c1-2:checked ~ .controls .n2,
+#c1-3:checked ~ .controls .p3,
+#c1-3:checked ~ .controls .n3 { display: block; }
+
+/* c2 controls */
+#c2-1:checked ~ .controls .p1,
+#c2-1:checked ~ .controls .n1,
+#c2-2:checked ~ .controls .p2,
+#c2-2:checked ~ .controls .n2 { display:block; }
+
+/* c3 controls */
+#c3-1:checked ~ .controls .p1,
+#c3-1:checked ~ .controls .n1,
+#c3-2:checked ~ .controls .p2,
+#c3-2:checked ~ .controls .n2 { display:block; }
+
+/* c4 controls */
+#c4-1:checked ~ .controls .p1,
+#c4-1:checked ~ .controls .n1,
+#c4-2:checked ~ .controls .p2,
+#c4-2:checked ~ .controls .n2 { display:block; }
+
+/* dots */
+.dots {
+    display:flex;
+    gap:8px;
+    justify-content:center;
+    padding:10px 0 14px 0;
+    background: rgba(255,239,217,0.95);
+}
+.dots .dot {
+    cursor: pointer;
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background: rgba(0,0,0,0.18);
+    display:inline-block;
+    border: 2px solid transparent;
+}
+.carousel input:checked ~ .dots label[for]:nth-of-type(1) { /* visual cue handled below */ }
+
+/* highlight active dot per radio - per carousel group selectors */
+#c1-1:checked ~ .dots label[for="c1-1"],
+#c1-2:checked ~ .dots label[for="c1-2"],
+#c1-3:checked ~ .dots label[for="c1-3"],
+#c2-1:checked ~ .dots label[for="c2-1"],
+#c2-2:checked ~ .dots label[for="c2-2"],
+#c3-1:checked ~ .dots label[for="c3-1"],
+#c3-2:checked ~ .dots label[for="c3-2"],
+#c4-1:checked ~ .dots label[for="c4-1"],
+#c4-2:checked ~ .dots label[for="c4-2"] {
+    background: #fff;
+    border-color: #b7410e;
+    box-shadow: 0 0 0 4px rgba(183,65,14,0.08);
+}
+
+/* minor adjustment to .item layout (image on top, desc handled by figcaption) */
+.item { padding: 0; overflow: hidden; }
+
+/* smaller screens adjust image height */
+@media (max-width: 480px) {
+    .slide img { height: 160px; }
+}
+
+/* คำอธิบายคงที่ใต้ carousel */
+.desc {
+    padding: 12px 14px;
+    background: rgba(255,239,217,0.95);
+    color: #5b2b0f;
+    font-size: .95rem;
+    text-align: left;
+    border-radius: 0 0 8px 8px;
+}
+
