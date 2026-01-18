@@ -42,9 +42,12 @@ import './theme/variables.css';
 
 setupIonicReact();
 
-const App: React.FC = () => (
+const App: React.FC = () => {
+  const isGhPages = typeof window !== 'undefined' && window.location.pathname.includes('/lab05-photo-react');
+  const basename = isGhPages ? '/mobileweb/lab05-photo-react/' : '/';
+  return (
   <IonApp>
-    <IonReactRouter>
+    <IonReactRouter basename={basename}>
       <IonTabs>
         <IonRouterOutlet>
           <Route exact path="/tab1">
@@ -78,6 +81,7 @@ const App: React.FC = () => (
       </IonTabs>
     </IonReactRouter>
   </IonApp>
-);
+  );
+};
 
 export default App;
