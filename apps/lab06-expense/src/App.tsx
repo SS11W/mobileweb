@@ -14,6 +14,8 @@ import { ellipse, square, triangle } from 'ionicons/icons';
 import Tab1 from './pages/Tab1';
 import Tab2 from './pages/Tab2';
 import Tab3 from './pages/Tab3';
+import AddExpense from './pages/AddExpense';
+import EditExpense from './pages/EditExpense';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -60,6 +62,12 @@ const App: React.FC = () => (
           </Route>
           <Route path="/tab3">
             <Tab3 />
+          </Route>
+          <Route exact path="/add-expense">
+            <AddExpense />
+          </Route>
+          <Route exact path="/edit-expense/:id">
+            <EditExpense />
           </Route>
           <Route exact path="/">
             <Redirect to="/tab1" />
